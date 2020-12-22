@@ -28,7 +28,6 @@ function randomCocktail() {
             wineIngredient.innerHTML += `<li>${ingredientTemp} : ${measurementTemp}</li>`
           }
         }
-
         // show how to make the cocktail
         createdP = document.createElement("p")
         createdP.id = "removeAfterClick"
@@ -37,13 +36,39 @@ function randomCocktail() {
       })
     })
   }
+  // select elements in DOM tree
   wineName = document.getElementById("cocktailName");
   wineImageElement = document.createElement("img")
   wineImage = document.querySelector("#avatar")
   wineIngredient = document.querySelector("#ingredients")
   wineHowTo = document.getElementById("cocktailSteps")
-  
-  
-
 }
+
+function Search() {
+  const searchForm = document.getElementById("search-bar")
+  const searchBar = document.getElementById("search-input");
+  const searchDiv = document.getElementById("search-result")
+  const searchTitle = document.getElementById("search-title")
+  const searchResult = document.getElementById("search-result-list")
+  
+  searchForm.addEventListener("submit", (event)=> {
+    event.preventDefault();
+    searchDiv.style.display = "block"
+    // clear data before each search
+    searchResult.innerHTML = ""
+    searchTitle.textContent = "Search Result for"
+    
+    searchTitle.textContent += ` '${searchBar.value}':`
+    const searchAPI = `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${searchBar.value}`
+    let data = fetch(searchAPI)
+    .then(response => response.json())
+    .then(result => {
+      for(i=0; i<result["drinks"].length; i++) {
+        searchResult.innerHTML += `<li>${result["drinks"][i]["strDrink"]}</li>`
+      }
+    })
+  })
+}
+
 randomCocktail()
+Search()
