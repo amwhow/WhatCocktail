@@ -1,11 +1,16 @@
 // return a random cocktail's name
+wineName = document.getElementById("cocktailName");
+wineImageElement = document.createElement("img")
+wineImage = document.querySelector("#avatar")
+wineIngredient = document.querySelector("#ingredients")
+wineHowTo = document.getElementById("cocktailSteps")
 
 function randomCocktail() {
   randomAPI = "https://www.thecocktaildb.com/api/json/v1/1/random.php";
   button = document.querySelectorAll("#randomName")
   for (i = 0; i < button.length; i++) {
     button[i].addEventListener("click", () => {
-      wineName.innerHTML = "<div class='spinner-grow text-primary' role='status'><span class='sr-only'></span></div>"
+      // wineName.innerHTML = "<div class='spinner-grow text-primary' role='status'><span class='sr-only'></span></div>"
       wineIngredient.innerHTML = ''
       if (document.querySelector("#removeAfterClick")) {
         document.querySelector("#removeAfterClick").remove()
@@ -14,34 +19,32 @@ function randomCocktail() {
       // how to wait till all data are ready and then show them?
       .then(data => data.json())
       .then(response => {
-        // show cocktail name and avatar
-        wineName.textContent = response["drinks"][0]["strDrink"]
-        wineImageElement.style.width = "180px"
-        wineImageElement.src = response["drinks"][0]["strDrinkThumb"]
-        wineImage.append(wineImageElement)
-
-        // create the ingredient list
-        for(i=1; i<=15; i++) {
-          let ingredientTemp = response["drinks"][0][`strIngredient${i}`]
-          let measurementTemp = response["drinks"][0][`strMeasure${i}`]
-          if (ingredientTemp !== null && ingredientTemp !== "" && measurementTemp !== null ) {
-            wineIngredient.innerHTML += `<li>${ingredientTemp} : ${measurementTemp}</li>`
-          }
-        }
-        // show how to make the cocktail
-        createdP = document.createElement("p")
-        createdP.id = "removeAfterClick"
-        createdP.textContent = response["drinks"][0]["strInstructions"]
-        wineHowTo.append(createdP)
+        buildModalInfo(wineName, wineImageElement, wineImage, wineIngredient, wineHowTo, response, 0)
       })
     })
   }
-  // select elements in DOM tree
-  wineName = document.getElementById("cocktailName");
-  wineImageElement = document.createElement("img")
-  wineImage = document.querySelector("#avatar")
-  wineIngredient = document.querySelector("#ingredients")
-  wineHowTo = document.getElementById("cocktailSteps")
+}
+
+// set up cocktail info in modal
+function buildModalInfo (a1, a2, a3, a4, a5, response, i) {
+  a1.textContent = response["drinks"][i]["strDrink"]
+  a2.style.width = "180px"
+  a2.src = response["drinks"][i]["strDrinkThumb"]
+  a3.append(a2)
+
+  // create the ingredient list, 15 is the length of the ingredienand measurements in the API array
+  for(k=1; k<=15; k++) {
+    let ingredientTemp = response["drinks"][i][`strIngredient${k}`]
+    let measurementTemp = response["drinks"][i][`strMeasure${k}`]
+    if (ingredientTemp !== null && ingredientTemp !== "" && measurementTemp !== null ) {
+      a4.innerHTML += `<li>${ingredientTemp} : ${measurementTemp}</li>`
+    }
+  }
+  // show how to make the cocktail
+  createdP = document.createElement("p")
+  createdP.id = "removeAfterClick"
+  createdP.textContent = response["drinks"][i]["strInstructions"]
+  a5.append(createdP)
 }
 
 function Search() {
@@ -57,18 +60,29 @@ function Search() {
     // clear data before each search
     searchResult.innerHTML = ""
     searchTitle.textContent = "Search Result for"
-    
+
     searchTitle.textContent += ` '${searchBar.value}':`
     const searchAPI = `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${searchBar.value}`
-    let data = fetch(searchAPI)
-    .then(response => response.json())
-    .then(result => {
+    let data = fetch(searchAPI).then(response => response.json())
+    let nextData = data.then(result => {
       for(i=0; i<result["drinks"].length; i++) {
-        searchResult.innerHTML += `<li>${result["drinks"][i]["strDrink"]}</li>`
+        // generate search results, each item is shown as a link
+        searchResult.innerHTML += `<a style="text-decoration:underline;" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><li id="list_${i}" >${result["drinks"][i]["strDrink"]}</li></a>`
       }
+      searchResult.addEventListener("click", (event) => {
+        for(i=0; i<result["drinks"].length; i++) {
+          if (event.target && event.target.id === `list_${i}`) {
+            buildModalInfo(wineName, wineImageElement, wineImage, wineIngredient, wineHowTo, result, i)
+          } 
+        }
+      })
     })
   })
 }
+
+// function createSearchContent() {
+//   if(e.target && e.target.nodeName == "LI")
+// }
 
 randomCocktail()
 Search()
