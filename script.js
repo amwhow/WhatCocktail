@@ -1,4 +1,4 @@
-// return a random cocktail's name
+// set up dom elements for all functions
 wineName = document.getElementById("cocktailName");
 wineImageElement = document.createElement("img")
 wineImage = document.querySelector("#avatar")
@@ -27,6 +27,11 @@ function randomCocktail() {
 
 // set up cocktail info in modal
 function buildModalInfo (a1, a2, a3, a4, a5, response, i) {
+  // clear data before each build
+  a4.innerHTML = ''
+  createdP = document.createElement("p")
+  if (a5.children.length > 0) {a5.removeChild(a5.lastChild)}
+
   a1.textContent = response["drinks"][i]["strDrink"]
   a2.style.width = "180px"
   a2.src = response["drinks"][i]["strDrinkThumb"]
@@ -41,7 +46,6 @@ function buildModalInfo (a1, a2, a3, a4, a5, response, i) {
     }
   }
   // show how to make the cocktail
-  createdP = document.createElement("p")
   createdP.id = "removeAfterClick"
   createdP.textContent = response["drinks"][i]["strInstructions"]
   a5.append(createdP)
@@ -64,12 +68,13 @@ function Search() {
     searchTitle.textContent += ` '${searchBar.value}':`
     const searchAPI = `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${searchBar.value}`
     let data = fetch(searchAPI).then(response => response.json())
-    let nextData = data.then(result => {
+    data.then(result => {
       for(i=0; i<result["drinks"].length; i++) {
         // generate search results, each item is shown as a link
         searchResult.innerHTML += `<a style="text-decoration:underline;" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><li id="list_${i}" >${result["drinks"][i]["strDrink"]}</li></a>`
       }
       searchResult.addEventListener("click", (event) => {
+
         for(i=0; i<result["drinks"].length; i++) {
           if (event.target && event.target.id === `list_${i}`) {
             buildModalInfo(wineName, wineImageElement, wineImage, wineIngredient, wineHowTo, result, i)
@@ -79,10 +84,6 @@ function Search() {
     })
   })
 }
-
-// function createSearchContent() {
-//   if(e.target && e.target.nodeName == "LI")
-// }
 
 randomCocktail()
 Search()
