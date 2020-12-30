@@ -71,7 +71,7 @@ function Search() {
     data.then(result => {
       for(i=0; i<result["drinks"].length; i++) {
         // generate search results, each item is shown as a link
-        searchResult.innerHTML += `<a style="text-decoration:underline;" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><li id="list_${i}" >${result["drinks"][i]["strDrink"]}</li></a>`
+        searchResult.innerHTML += `<a style="text-decoration:underline; cursor:pointer;" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><li id="list_${i}" >${result["drinks"][i]["strDrink"]}</li></a>`
       }
       searchResult.addEventListener("click", (event) => {
 
