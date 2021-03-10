@@ -5,7 +5,7 @@ A random cocktail generator powered by JavaScript and the CocktailDB API
 * Feel free to play around with the app and any feedback is welcome!  
 
 ## General info
-This app generates random cocktails recipes for people who are interested to making one. It also supports filtering based on the ingredients you have.  
+This app generates random cocktails recipes for people who are interested to make one. It also supports filtering based on the ingredients you have.  
 Hope this can bring you some refreshment inspirations during the summer nights!
 
 ## Technologies
